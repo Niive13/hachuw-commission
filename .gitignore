@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Environment
+.env
+.env.local
+.env.*.local
+!.env.example
+!.env.local.example
+
+# Build
+.next/
+out/
+build/
+dist/
+
+# Laravel
+backend/storage/logs/*.log
+backend/storage/framework/cache/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+backend/bootstrap/cache/*.php
+backend/public/storage
+backend/public/hot
+backend/public/.htaccess
+
+# Uploads (biarkan folder, exclude file)
+backend/storage/app/public/artworks/*
+!backend/storage/app/public/artworks/.gitkeep
+backend/storage/app/public/catalog-covers/*
+!backend/storage/app/public/catalog-covers/.gitkeep
+backend/storage/app/public/portfolio-images/*
+!backend/storage/app/public/portfolio-images/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

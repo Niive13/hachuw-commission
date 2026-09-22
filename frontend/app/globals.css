@@ -1,0 +1,130 @@
+@import "tailwindcss";
+
+/*
+|--------------------------------------------------------------------------
+| Hachuw Theme — Tailwind v4
+|--------------------------------------------------------------------------
+|
+| Palet warna:
+| - Cream/peach background
+| - Pink/rose accent (cute, soft)
+| - Purple/lavender secondary
+| - Soft text warna coklat gelap (bukan hitam pekat)
+|
+*/
+
+@theme {
+  /* === WARNA UTAMA === */
+  --color-cream-50: #FFFBF7;
+  --color-cream-100: #FFF4EC;
+  --color-cream-200: #FFE8D6;
+
+  --color-blush-50: #FFF5F7;
+  --color-blush-100: #FFE4EC;
+  --color-blush-200: #FFCBD9;
+  --color-blush-300: #FFA8BF;
+  --color-blush-400: #FF85A3;
+  --color-blush-500: #F76C8E;
+  --color-blush-600: #E04E72;
+
+  --color-lavender-50: #F8F5FF;
+  --color-lavender-100: #EDE4FF;
+  --color-lavender-200: #D9C7FF;
+  --color-lavender-300: #BFA0FF;
+  --color-lavender-400: #A47EFF;
+  --color-lavender-500: #8A5CF5;
+
+  --color-peach-100: #FFEBDC;
+  --color-peach-200: #FFD6BC;
+  --color-peach-300: #FFBC95;
+
+  /* === WARNA TEXT === */
+  --color-ink-50: #FAF6F3;
+  --color-ink-400: #8A7A70;
+  --color-ink-600: #5C4A40;
+  --color-ink-800: #3A2A22;
+  --color-ink-900: #2A1D17;
+
+  /* === STATUS === */
+  --color-success: #7BC98C;
+  --color-warning: #FFC46B;
+  --color-danger: #F87171;
+  --color-info: #7DC1F7;
+
+  /* === FONT === */
+  --font-sans: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-quicksand), var(--font-nunito), sans-serif;
+
+  /* === RADIUS === */
+  --radius-soft: 1rem;
+  --radius-round: 1.5rem;
+  --radius-blob: 2rem;
+
+  /* === SHADOW === */
+  --shadow-soft: 0 4px 20px -4px rgb(247 108 142 / 0.15);
+  --shadow-card: 0 8px 30px -8px rgb(247 108 142 / 0.2);
+  --shadow-hover: 0 12px 40px -8px rgb(247 108 142 / 0.3);
+
+    /* === Z-INDEX === */
+  --z-index-60: 60;
+  --z-index-70: 70;
+  --z-index-80: 80;
+}
+
+/* === BASE STYLES === */
+
+body {
+  background-color: var(--color-cream-50);
+  color: var(--color-ink-800);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection color */
+::selection {
+  background-color: var(--color-blush-200);
+  color: var(--color-ink-900);
+}
+
+/* Scrollbar (opsional) */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-cream-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-blush-200);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-blush-300);
+}
+
+@keyframes marquee-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  width: max-content;
+  animation: marquee-left 40s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
