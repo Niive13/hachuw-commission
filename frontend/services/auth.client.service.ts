@@ -19,7 +19,7 @@ interface LogoutResponse {
 
 export const authClientService = {
   async login(username: string, password: string): Promise<Admin> {
-    const res = await bffFetch<LoginResponse>("/api/auth/signin", {
+    const res = await bffFetch<LoginResponse>("/api/user/signin", {
       method: "POST",
       body: JSON.stringify({ username, password }),
     });
@@ -27,12 +27,12 @@ export const authClientService = {
   },
 
   async logout(): Promise<void> {
-    await bffFetch<LogoutResponse>("/api/auth/logout", { method: "POST" });
+    await bffFetch<LogoutResponse>("/api/user/logout", { method: "POST" });
   },
 
   async me(): Promise<Admin | null> {
     try {
-      const res = await bffFetch<MeResponse>("/api/auth/me", { method: "GET" });
+      const res = await bffFetch<MeResponse>("/api/user/me", { method: "GET" });
       return res.data;
     } catch (e) {
       // 401 = tidak login
