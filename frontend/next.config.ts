@@ -5,8 +5,11 @@ const nextConfig: NextConfig = {
   output: "standalone",
 
   images: {
+    // Disable optimizer — gambar langsung di-serve dari sumbernya.
+    // (Solusi karena server tidak bisa fetch ke Cloudflare sendiri.)
+    unoptimized: true,
+
     remotePatterns: [
-      // Development local
       {
         protocol: "http",
         hostname: "127.0.0.1",
@@ -19,7 +22,6 @@ const nextConfig: NextConfig = {
         port: "8000",
         pathname: "/storage/**",
       },
-      // Production
       {
         protocol: "https",
         hostname: "api.hachuw.art",

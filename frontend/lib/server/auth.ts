@@ -1,66 +1,69 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { httpRequest } from "./http";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000/api";
+// URL publik (untuk redirect browser, dsb).
+const API_URL_PUBLIC = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000/api";
+
+// URL internal (untuk fetch server-side, bypass Cloudflare).
+const API_URL_INTERNAL = process.env.INTERNAL_API_URL ?? "http://127.0.0.1/api";
+
+// Host header untuk internal request (agar LiteSpeed route ke vhost yang benar).
+const API_HOST_HEADER = process.env.INTERNAL_API_HOST ?? "api.hachuw.art";
+
 export const TOKEN_COOKIE = "hachuw_token";
 
-/**
- * Ambil token dari HTTP-only cookie (server-side).
- */
 export async function getToken(): Promise<string | null> {
   const cookieStore = await cookies();
   return cookieStore.get(TOKEN_COOKIE)?.value ?? null;
 }
 
-/**
- * Set HTTP-only cookie berisi token.
- */
-export async function setTokenCookie(response: NextResponse, token: string, maxAgeSeconds = 60 * 60 * 24 * 7) {
+export async function setTokenCookie(
+  response: NextResponse,
+  token: string,
+  maxAgeSeconds = 60 * 60 * 24 * 7,
+) {
   response.cookies.set({
     name: TOKEN_COOKIE,
     value: token,
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+    sameSite: "lax",
+    domain: process.env.NODE_ENV === "production" ? ".hachuw.art" : undefined,
     path: "/",
     maxAge: maxAgeSeconds,
   });
   return response;
 }
 
-/**
- * Hapus cookie token.
- */
 export async function clearTokenCookie(response: NextResponse) {
   response.cookies.set({
     name: TOKEN_COOKIE,
     value: "",
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+    sameSite: "lax",
+    domain: process.env.NODE_ENV === "production" ? ".hachuw.art" : undefined,
     path: "/",
     maxAge: 0,
   });
   return response;
 }
 
-/**
- * Fetch ke Laravel API dengan Authorization Bearer.
- * Otomatis return response status & body.
- */
 export async function fetchLaravel(
   path: string,
   options: RequestInit = {},
   token?: string | null,
 ): Promise<{ status: number; body: unknown }> {
-  const url = `${API_URL}${path.startsWith("/") ? path : `/${path}`}`;
+  const cleanPath = path.startsWith("/") ? path : `/${path}`;
+  const url = `${API_URL_INTERNAL}${cleanPath}`;
 
   const headers: Record<string, string> = {
     Accept: "application/json",
     ...((options.headers as Record<string, string>) ?? {}),
   };
 
-  // Jangan set Content-Type kalau body FormData (biar boundary auto).
+  // Jangan set Content-Type untuk FormData.
   if (!(options.body instanceof FormData) && !headers["Content-Type"]) {
     headers["Content-Type"] = "application/json";
   }
@@ -69,18 +72,33 @@ export async function fetchLaravel(
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const res = await fetch(url, {
-    ...options,
-    headers,
-    cache: "no-store",
-  });
+  // Kalau body FormData, kita butuh fetch biasa (undici custom Host tidak support FormData).
+  // Fallback ke fetch public API URL (via Cloudflare) — untuk upload file.
+  if (options.body instanceof FormData) {
+    const res = await fetch(`${API_URL_PUBLIC}${cleanPath}`, {
+      ...options,
+      headers,
+      cache: "no-store",
+    });
 
-  let body: unknown = null;
-  try {
-    body = await res.json();
-  } catch {
-    // Non-JSON response
+    let body: unknown = null;
+    try {
+      body = await res.json();
+    } catch {}
+
+    return { status: res.status, body };
   }
 
-  return { status: res.status, body };
+  // Untuk JSON request, pakai httpRequest (bypass Cloudflare).
+  const method = options.method ?? "GET";
+  const bodyString = typeof options.body === "string" ? options.body : undefined;
+
+  const res = await httpRequest(url, {
+    method,
+    headers,
+    body: bodyString,
+    hostHeader: API_HOST_HEADER,
+  });
+
+  return res;
 }
