@@ -719,7 +719,6 @@ Source code tidak untuk didistribusikan tanpa izin.
 ## 🙏 Credits
 
 - Built with ❤️ using **Laravel** & **Next.js**
-- Design inspired by [lingshayue.carrd.co](https://lingshayue.carrd.co/)
 - Icons from [Simple Icons](https://simpleicons.org/)
 - Tailwind CSS v4 for styling
 
