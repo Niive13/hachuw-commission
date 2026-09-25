@@ -19,7 +19,7 @@ interface LogoutResponse {
 
 export const authClientService = {
   async login(username: string, password: string): Promise<Admin> {
-    const res = await bffFetch<LoginResponse>("/api/auth/login", {
+    const res = await bffFetch<LoginResponse>("/api/auth/signin", {
       method: "POST",
       body: JSON.stringify({ username, password }),
     });

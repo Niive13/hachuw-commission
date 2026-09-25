@@ -43,3 +43,14 @@ desktop.ini
 .idea/
 *.swp
 *.swo
+# Build artifacts
+*.zip
+frontend/*.zip
+
+# Build artifacts
+*.zip
+frontend/*.zip
+
+# Build artifacts
+*.zip
+frontend/*.zip

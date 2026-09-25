@@ -1,12 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Untuk Node.js App di cPanel.
-  output: "standalone",
+  // Standalone TIDAK dipakai di Vercel (Vercel auto-handle).
+  // Jadi kita hapus `output: "standalone"`.
 
   images: {
-    // Disable optimizer — gambar langsung di-serve dari sumbernya.
-    // (Solusi karena server tidak bisa fetch ke Cloudflare sendiri.)
+    // Disable optimizer karena kita pakai gambar dari API lain.
     unoptimized: true,
 
     remotePatterns: [
