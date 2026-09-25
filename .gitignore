@@ -54,3 +54,9 @@ frontend/*.zip
 # Build artifacts
 *.zip
 frontend/*.zip
+
+# Root shouldn't have node artifacts
+/package.json
+/package-lock.json
+/node_modules
+/tsconfig.json
